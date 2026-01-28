@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 5 – Tony's Café Billing Fix</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #2b2d42, #1a1a2e);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .bill-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 12px;
+      width: 340px;
+      box-shadow: 0 0 12px rgba(255,255,255,0.25);
+    }
+    h1 {
+      text-align: center;
+      color: #ffcc70;
+      margin-bottom: 20px;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin: 8px 0;
+      font-size: 17px;
+    }
+    .bug { color: #ff4d6d; }
+    .fix { color: #4cffb3; }
+    .total {
+      border-top: 1px dashed #ffcc70;
+      margin-top: 15px;
+      padding-top: 12px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .bonus {
+      margin-top: 12px;
+      font-size: 15px;
+      color: #ffea00;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bill-container">
+    <h1>🧾 Tony’s Café Bill</h1>
+
+    <div class="row bug">
+      <span>Buggy Total ("200" + 50)</span>
+      <span id="bugTotal">--</span>
+    </div>
+
+    <div class="row fix">
+      <span>Fixed Total (Number)</span>
+      <span id="fixedTotal">--</span>
+    </div>
+
+    <div class="row fix">
+      <span>Second Item (parseFloat)</span>
+      <span id="floatTotal">--</span>
+    </div>
+
+    <div class="row total">
+      <span>Grand Total</span>
+      <span id="grandTotal">--</span>
+    </div>
+
+    <p id="bonusText" class="bonus"></p>
+  </div>
+
+<script>
+  // ===============================
+  // 1️⃣ Buggy Calculation
+  // ===============================
+  let itemPrice = "200"; // string
+  let quantity = 50;     // number
+
+  let buggyTotal = itemPrice + quantity; // ❌ "20050"
+  document.getElementById("bugTotal").textContent = buggyTotal;
+
+  // ===============================
+  // 2️⃣ Fix Using Explicit Conversion
+  // ===============================
+  let fixedTotal = Number(itemPrice) + quantity; // ✅ 250
+  document.getElementById("fixedTotal").textContent = "₹" + fixedTotal;
+
+  // ===============================
+  // 3️⃣ Add Another Item (parseFloat)
+  // ===============================
+  let secondItemPrice = "100.75"; // string with decimal
+  let secondItemTotal = parseFloat(secondItemPrice); // ✅ 100.75
+  document.getElementById("floatTotal").textContent = "₹" + secondItemTotal;
+
+  // ===============================
+  // 4️⃣ Grand Total
+  // ===============================
+  let grandTotal = fixedTotal + secondItemTotal;
+  document.getElementById("grandTotal").textContent = "₹" + grandTotal.toFixed(2);
+
+  // ===============================
+  // 🔥 Bonus: Convert Number to String
+  // ===============================
+  let finalAsString = "Final total (as string): ₹" + String(fixedTotal);
+  document.getElementById("bonusText").textContent = finalAsString;
+</script>
+
+</body>
+</html>
