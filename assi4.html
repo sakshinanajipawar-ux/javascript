@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 4 – Tony's Café Receipt</title>
+<style>
+  body {
+    font-family: 'Courier New', Courier, monospace;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  h1 { color: #ffcc70; margin-bottom: 20px; text-align: center; }
+  .receipt {
+    background: #222;
+    border: 2px dashed #ffcc70;
+    border-radius: 10px;
+    width: 350px;
+    padding: 25px 20px;
+    box-shadow: 0 0 20px rgba(255,204,112,0.3);
+  }
+  .receipt-header { text-align: center; margin-bottom: 15px; }
+  .receipt-header h2 { margin: 0; font-size: 22px; color: #ffcc70; }
+  .receipt-header p { margin: 2px 0; font-size: 14px; color: #bbb; }
+  .receipt-item { display: flex; justify-content: space-between; margin: 8px 0; font-size: 18px; }
+  .total { border-top: 1px dashed #ffcc70; margin-top: 12px; padding-top: 12px; font-weight: bold; font-size: 20px; display: flex; justify-content: space-between; }
+  .bonus { font-size: 16px; margin-top: 8px; color: #ffcc70; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<h1>☕ Tony's Café Digital Receipt</h1>
+
+<div class="receipt" id="receipt"></div>
+
+<script>
+  // ===============================
+  // 1️⃣ Fill in Order Details
+  // ===============================
+  let customerName = "Riya";
+  let itemName = "lATTe";   // messy input
+  let price = 180;
+  let quantity = 2;
+
+  // ===============================
+  // 2️⃣ Format Item Name Neatly
+  // ===============================
+  let formattedItem =
+    itemName.charAt(0).toUpperCase() +
+    itemName.slice(1).toLowerCase();
+
+  // ===============================
+  // 3️⃣ Calculate Total Bill
+  // ===============================
+  let total = price * quantity;
+
+  // ===============================
+  // 🔥 BONUS: Service Charge
+  // ===============================
+  let serviceChargeRate = 0.10;
+  let serviceCharge = total * serviceChargeRate;
+  let finalAmount = total + serviceCharge;
+
+  // ===============================
+  // Display Receipt
+  // ===============================
+  const receiptDiv = document.getElementById("receipt");
+
+  receiptDiv.innerHTML = `
+    <div class="receipt-header">
+      <h2>TONY'S CAFÉ</h2>
+      <p>Customer: ${customerName}</p>
+    </div>
+
+    <div class="receipt-item">
+      <span>${formattedItem} x ${quantity}</span>
+      <span>₹${total}</span>
+    </div>
+
+    <div class="bonus">
+      <span>Service Charge (10%)</span>
+      <span>₹${serviceCharge.toFixed(2)}</span>
+    </div>
+
+    <div class="total">
+      <span>Final Amount</span>
+      <span>₹${finalAmount.toFixed(2)}</span>
+    </div>
+
+    <p style="text-align:center; margin-top:12px;">
+      Thank you, ${customerName}! Enjoy your coffee ☕
+    </p>
+  `;
+</script>
+
+</body>
+</html>
