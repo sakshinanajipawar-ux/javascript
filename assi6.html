@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tony's Café Membership Discounts</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  h1 { color: #ffcc70; margin-bottom: 20px; text-align: center; }
+  .bill {
+    background: #222;
+    border: 2px dashed #ffcc70;
+    border-radius: 12px;
+    width: 320px;
+    padding: 25px;
+    box-shadow: 0 0 20px rgba(255,204,112,0.3);
+    margin-bottom: 20px;
+  }
+  .bill p { margin: 8px 0; font-size: 17px; }
+  .highlight { color: #ffcc70; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>🏆 Tony's Café Membership Billing</h1>
+<div class="bill" id="billDiv">
+  <!-- Bill details will appear here -->
+</div>
+
+<script>
+  // ===============================
+  // Step 0: Initial setup
+  // ===============================
+  let membership = "Gold";  // Try: "Gold", "Silver", "Bronze", "Regular"
+  let billAmount = 500;     // Example bill amount
+  let discount = 0;
+
+  // Step 5: Ternary welcome message
+  let isMember = membership !== "Regular";
+  let welcomeMsg = isMember ? "Welcome back, loyal customer!" : "Sign up to get discounts!";
+
+  // ===============================
+  // Step 2: Calculate discount using if-else
+  // ===============================
+  if (membership === "Gold") {
+    discount = 0.20;
+  } else if (membership === "Silver") {
+    discount = 0.10;
+  } else if (membership === "Bronze") {
+    discount = 0.05;
+  } else {
+    discount = 0;
+  }
+  let finalAmountIfElse = billAmount - (billAmount * discount);
+
+  // ===============================
+  // Step 4: Calculate discount using switch
+  // ===============================
+  let discountSwitch = 0;
+  switch(membership) {
+    case "Gold": discountSwitch = 0.20; break;
+    case "Silver": discountSwitch = 0.10; break;
+    case "Bronze": discountSwitch = 0.05; break;
+    default: discountSwitch = 0;
+  }
+  let finalAmountSwitch = billAmount - (billAmount * discountSwitch);
+
+  // ===============================
+  // Display results on the webpage
+  // ===============================
+  const billDiv = document.getElementById("billDiv");
+  billDiv.innerHTML = `
+    <p class="highlight">${welcomeMsg}</p>
+    <p>Membership Type: <span class="highlight">${membership}</span></p>
+    <p>Original Bill Amount: ₹${billAmount.toFixed(2)}</p>
+    <p>Discount (if-else): ${discount*100}% → Final Amount: ₹${finalAmountIfElse.toFixed(2)}</p>
+    <p>Discount (switch): ${discountSwitch*100}% → Final Amount: ₹${finalAmountSwitch.toFixed(2)}</p>
+  `;
+</script>
+
+</body>
+</html>
