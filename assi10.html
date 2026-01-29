@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tony’s Café Menu System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fde2e4;
+      padding: 30px;
+    }
+    .box {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 420px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #b8336a;
+    }
+    .output {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>🍩 Tony’s Café Menu</h1>
+  <div id="output" class="output"></div>
+</div>
+
+<script>
+  const output = document.getElementById("output");
+
+  // ===============================
+  // Task 1 – Display Menu Items
+  // ===============================
+  let menuItems = ['Latte', 'Cappuccino', 'Espresso', 'Croissant'];
+
+  output.innerText += `First item: ${menuItems[0]}\n`;
+  output.innerText += `Third item: ${menuItems[2]}\n\n`;
+
+  // ===============================
+  // Task 2 – Add and Remove Items
+  // ===============================
+  menuItems.push('Iced Latte');  // add new item
+  menuItems.pop();               // remove last item
+  menuItems.shift();             // remove first item
+
+  output.innerText += `Updated Menu: ${menuItems.join(', ')}\n\n`;
+
+  // ===============================
+  // Task 3 – Show Full Menu (Loop)
+  // ===============================
+  for (let i = 0; i < menuItems.length; i++) {
+    output.innerText += `${menuItems[i]} is available today!\n`;
+  }
+
+  output.innerText += "\n";
+
+  // ===============================
+  // Task 4 – Add 10% Tax (map)
+  // ===============================
+  let prices = [120, 150, 200, 250];
+  let updatedPrices = prices.map(price => price * 1.1);
+
+  output.innerText += `Prices with tax: ${updatedPrices.join(', ')}\n\n`;
+
+  // ===============================
+  // Task 5 – Find Cold Drinks (filter)
+  // ===============================
+  let coldDrinks = menuItems.filter(item => item.includes("Iced"));
+
+  output.innerText += `Cold Drinks: ${coldDrinks.join(', ') || 'None today!'}`;
+</script>
+
+</body>
+</html>
