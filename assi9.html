@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tony’s Café – Functions & Scope</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e293b;
+      color: #fff;
+      padding: 30px;
+    }
+    .box {
+      background: #0f172a;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 420px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #facc15;
+    }
+    .output {
+      background: #334155;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>☕ Tony’s Café Assistant</h1>
+  <div id="output" class="output"></div>
+</div>
+
+<script>
+  const output = document.getElementById("output");
+
+  // ===============================
+  // Step 1 – Greeting Function
+  // ===============================
+  function greetCustomer(name) {
+    output.innerText += `Hello, ${name}! Welcome to Tony’s Café ☕\n`;
+  }
+
+  // ===============================
+  // Step 2 – Bill Calculator
+  // ===============================
+  function calculateBill(price, qty) {
+    let total = price * qty;
+    return total; // ✅ return added
+  }
+
+  // ===============================
+  // Step 3 – Combine the Functions
+  // ===============================
+  function serveCustomer(name, price, qty) {
+    greetCustomer(name);
+    let bill = calculateBill(price, qty);
+    output.innerText += `Your total bill is ₹${bill}\n`;
+  }
+
+  serveCustomer("Peter", 150, 2);
+
+  output.innerText += "\n";
+
+  // ===============================
+  // Step 4 – Scope Test
+  // ===============================
+  let cafeName = "Tony’s Café";
+
+  function showSpecial() {
+    let special = "Cappuccino";
+    output.innerText += `${cafeName} special today is ${special}\n`;
+  }
+
+  showSpecial();
+
+  // Global variable → accessible
+  output.innerText += `${cafeName}\n`;
+
+  // Local variable → NOT accessible (will cause error if uncommented)
+  // output.innerText += special;
+</script>
+
+</body>
+</html>
