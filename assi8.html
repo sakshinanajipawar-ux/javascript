@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Loopie – Tony's Café Assistant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e293b;
+      color: #fff;
+      padding: 30px;
+    }
+    .box {
+      background: #0f172a;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 420px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #facc15;
+    }
+    .log {
+      background: #334155;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+    }
+    .entry {
+      margin: 4px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h1>🤖 Loopie at Tony’s Café</h1>
+  <div id="output"></div>
+</div>
+
+<script>
+  const output = document.getElementById("output");
+
+  // 1️⃣ Step 1 – Serving Coffee (for loop)
+  for (let i = 1; i <= 5; i++) {
+    output.innerHTML += `<div class="entry">☕ Serving coffee to Customer ${i}...</div>`;
+  }
+  output.innerHTML += `<div class="entry">✅ All customers have been served!</div>`;
+
+  output.innerHTML += "<hr>";
+
+  // 2️⃣ Step 2 – Cleaning Tables (while loop)
+  let tablesLeft = 3;
+
+  while (tablesLeft > 0) {
+    output.innerHTML += `<div class="entry">🧹 Cleaning table... Tables left: ${tablesLeft}</div>`;
+    tablesLeft--;
+  }
+  output.innerHTML += `<div class="entry">✨ All tables are clean!</div>`;
+
+  output.innerHTML += "<hr>";
+
+  // 3️⃣ Step 3 – Machine Test (do...while loop)
+  let testsLeft = 0;
+
+  do {
+    output.innerHTML += `<div class="entry">⚙️ Testing espresso machine...</div>`;
+    testsLeft--;
+  } while (testsLeft > 0);
+
+  output.innerHTML += `<div class="entry">✅ Machine test complete!</div>`;
+
+  output.innerHTML += "<hr>";
+
+  // 🔥 BONUS – Closing Countdown
+  let count = 3;
+  const countdown = setInterval(() => {
+    if (count > 0) {
+      output.innerHTML += `<div class="entry">⏳ Closing café in ${count}...</div>`;
+      count--;
+    } else {
+      output.innerHTML += `<div class="entry">☕ Goodnight!</div>`;
+      clearInterval(countdown);
+    }
+  }, 1000);
+</script>
+
+</body>
+</html>
