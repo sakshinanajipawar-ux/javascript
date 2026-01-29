@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tony’s Profile Card</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+  }
+  h1 {
+    color: #ffcc70;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .card {
+    background: #222;
+    border: 2px dashed #ffcc70;
+    border-radius: 10px;
+    width: 340px;
+    padding: 25px;
+    box-shadow: 0 0 20px rgba(255,204,112,0.3);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255,204,112,0.6);
+  }
+  h2 { color: #ffcc70; margin-bottom: 5px; }
+  p { color: #ccc; margin: 6px 0; }
+  button {
+    margin-top: 20px;
+    background: #ffcc70;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button:hover { background: #ffdd88; }
+</style>
+</head>
+<body>
+
+<h1>👤 My Profile Card</h1>
+<div id="profile"></div>
+<button id="addSkillBtn">Add Random Skill</button>
+
+<script>
+  // ===============================
+  // TASK 1 – Personal Profile Object
+  // ===============================
+  const myProfile = {
+    name: "Natasha Romanoff",        // Replace with your name
+    role: "Frontend Developer",      // Replace with your role
+    location: "Moscow",              // Replace with your city
+    skills: ["React", "UI Design", "Problem Solving"] // Add 3+ core skills
+  };
+
+  // ===============================
+  // TASK 2 – Arrow Function & Template Literal
+  // ===============================
+  const createProfileCard = (profile) => {
+    const { name, role, location, skills } = profile;
+    return `
+      <div class="card">
+        <h2>${name}</h2>
+        <p>${role} • ${location}</p>
+        <p><strong>Skills:</strong> ${skills.join(", ")}</p>
+      </div>
+    `;
+  };
+
+  // Display initial profile card
+  const profileDiv = document.getElementById("profile");
+  profileDiv.innerHTML = createProfileCard(myProfile);
+
+  // ===============================
+  // TASK 3 – Add Random Skills with Spread Operator
+  // ===============================
+  const addSkillBtn = document.getElementById("addSkillBtn");
+  addSkillBtn.addEventListener("click", () => {
+    const randomSkills = ["Teamwork", "Time Management", "Creativity", "Communication", "Problem Solving"];
+    const randomSkill = randomSkills[Math.floor(Math.random() * randomSkills.length)];
+
+    // Avoid duplicates
+    if (!myProfile.skills.includes(randomSkill)) {
+      myProfile.skills = [...myProfile.skills, randomSkill];
+      profileDiv.innerHTML = createProfileCard(myProfile);
+    } else {
+      alert(`${randomSkill} is already in your skills!`);
+    }
+  });
+</script>
+
+</body>
+</html>
