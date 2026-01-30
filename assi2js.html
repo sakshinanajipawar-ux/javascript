@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Café Color Palette Picker</title>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      text-align: center;
+      background-color: #f5f5f5;
+      transition: background-color 0.3s ease;
+      padding-top: 60px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .palette {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    button {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    #colorText {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>☕ Café Theme Color Picker</h1>
+
+  <div class="palette">
+    <button data-color="#ff6b6b" style="background-color:#ff6b6b"></button>
+    <button data-color="#1dd3b0" style="background-color:#1dd3b0"></button>
+    <button data-color="#4dabf7" style="background-color:#4dabf7"></button>
+    <button data-color="#feca57" style="background-color:#feca57"></button>
+  </div>
+
+  <p id="colorText">Click a color to change the theme</p>
+
+  <script>
+    // Task 1: Select elements
+    const buttons = document.querySelectorAll('.palette button');
+    const colorText = document.querySelector('#colorText');
+    const palette = document.querySelector('.palette');
+
+    // Task 2 & 3: Button click functionality
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        const selectedColor = button.getAttribute('data-color');
+
+        document.body.style.backgroundColor = selectedColor;
+        colorText.innerHTML =
+          `Selected Color: <span style="color:${selectedColor}">${selectedColor}</span>`;
+      });
+    });
+
+    // Bonus: Create a new color button
+    const newButton = document.createElement('button');
+    newButton.style.backgroundColor = '#9b5de5';
+    newButton.setAttribute('data-color', '#9b5de5');
+
+    newButton.addEventListener('click', () => {
+      document.body.style.backgroundColor = '#9b5de5';
+      colorText.innerHTML =
+        `Selected Color: <span style="color:#9b5de5">#9b5de5</span>`;
+    });
+
+    palette.appendChild(newButton);
+  </script>
+
+</body>
+</html>
