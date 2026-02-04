@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App ☁️</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to right, #83a4d4, #b6fbff);
+    }
+
+    .weather-container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 10px;
+      box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #weatherResult {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="weather-container">
+    <h1>Weather App ☁️</h1>
+    <input type="text" id="cityInput" placeholder="Enter city">
+    <button id="searchButton">Search</button>
+    <div id="weatherResult"></div>
+  </div>
+
+  <script>
+    const apiKey = 'YOUR_API_KEY'; // <-- Replace with your OpenWeatherMap API key
+
+    const searchButton = document.getElementById('searchButton');
+    const cityInput = document.getElementById('cityInput');
+    const weatherResult = document.getElementById('weatherResult');
+
+    searchButton.addEventListener('click', () => {
+      const city = cityInput.value.trim();
+      if (!city) {
+        weatherResult.innerHTML = '<span class="error">❌ Please enter a city name!</span>';
+        return;
+      }
+      fetchWeather(city);
+    });
+
+    function fetchWeather(city) {
+      weatherResult.innerHTML = 'Fetching weather… 🌤️';
+
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+
+      fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error('City not found');
+          return response.json();
+        })
+        .then(data => displayWeather(data))
+        .catch(error => {
+          weatherResult.innerHTML = `<span class="error">❌ ${error.message}</span>`;
+          console.error(error);
+        });
+    }
+
+    function displayWeather(data) {
+      const temperature = data.main.temp;
+      const description = data.weather[0].description;
+      const humidity = data.main.humidity;
+      const windSpeed = data.wind.speed;
+
+      const weatherInfo = `
+        <strong>${data.name}, ${data.sys.country}</strong><br>
+        🌡 Temperature: ${temperature}°C<br>
+        🌥 Weather: ${description}<br>
+        💧 Humidity: ${humidity}%<br>
+        💨 Wind Speed: ${windSpeed} m/s
+      `;
+
+      weatherResult.innerHTML = weatherInfo;
+    }
+
+    // Optional: Allow Enter key to trigger search
+    cityInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') searchButton.click();
+    });
+  </script>
+
+</body>
+</html>
