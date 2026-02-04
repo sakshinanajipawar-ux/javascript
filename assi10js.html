@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 10 – GitHub Profile Fetcher</title>
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    input {
+      padding: 8px;
+      width: 220px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
+    button {
+      background: #24292e;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      width: 300px;
+      margin-top: 15px;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .card.show {
+      opacity: 1;
+    }
+
+    img {
+      width: 100px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>🔍 GitHub Profile Fetcher</h2>
+
+  <input id="username" type="text" placeholder="Enter GitHub username" />
+  <br />
+  <button id="fetchBtn">Fetch Profile</button>
+
+  <div id="profile"></div>
+
+  <script>
+    const fetchBtn = document.getElementById("fetchBtn");
+    const profileDiv = document.getElementById("profile");
+    const usernameInput = document.getElementById("username");
+
+    fetchBtn.addEventListener("click", fetchProfile);
+
+    function fetchProfile() {
+      const username = usernameInput.value.trim();
+
+      if (!username) {
+        alert("Please enter a username!");
+        return;
+      }
+
+      fetchBtn.disabled = true;
+      profileDiv.innerHTML = "<p>Fetching profile… ⏳</p>";
+
+      fetch(`https://api.github.com/users/${username}`)
+        .then(res => {
+          if (!res.ok) {
+            throw new Error("User not found");
+          }
+          return res.json();
+        })
+        .then(data => {
+          profileDiv.innerHTML = `
+            <div class="card show">
+              <img src="${data.avatar_url}" alt="Avatar">
+              <h3>${data.name || "No Name"}</h3>
+              <p>${data.bio || "No bio available"}</p>
+              <p>📦 Repos: ${data.public_repos}</p>
+              <p>👥 Followers: ${data.followers}</p>
+              <p>📍 Location: ${data.location || "Not specified"}</p>
+            </div>
+          `;
+        })
+        .catch(() => {
+          profileDiv.innerHTML = `
+            <p class="error">❌ User not found. Please try again!</p>
+          `;
+        })
+        .finally(() => {
+          fetchBtn.disabled = false;
+        });
+    }
+  </script>
+
+</body>
+</html>
