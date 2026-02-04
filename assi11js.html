@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tony’s Café Signup ☕</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3efe8;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #6f4e37;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    input.valid {
+      border-color: green;
+    }
+
+    input.invalid {
+      border-color: red;
+    }
+
+    .feedback {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #6f4e37;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #5a3f2c;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>☕ Tony’s Café Signup</h2>
+
+    <form id="signupForm">
+      <div class="form-group">
+        <input type="text" id="name" placeholder="Name" />
+        <span class="feedback" id="nameFeedback"></span>
+      </div>
+
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Email" />
+        <span class="feedback" id="emailFeedback"></span>
+      </div>
+
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Password" />
+        <span class="feedback" id="passwordFeedback"></span>
+      </div>
+
+      <button type="submit">Join Rewards</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("signupForm");
+
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    const nameFeedback = document.getElementById("nameFeedback");
+    const emailFeedback = document.getElementById("emailFeedback");
+    const passwordFeedback = document.getElementById("passwordFeedback");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function validateName() {
+      if (nameInput.value.trim().length >= 3) {
+        nameInput.classList.add("valid");
+        nameInput.classList.remove("invalid");
+        nameFeedback.textContent = "✅";
+        return true;
+      } else {
+        nameInput.classList.add("invalid");
+        nameInput.classList.remove("valid");
+        nameFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    function validateEmail() {
+      if (emailRegex.test(emailInput.value.trim())) {
+        emailInput.classList.add("valid");
+        emailInput.classList.remove("invalid");
+        emailFeedback.textContent = "✅";
+        return true;
+      } else {
+        emailInput.classList.add("invalid");
+        emailInput.classList.remove("valid");
+        emailFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    function validatePassword() {
+      if (passwordInput.value.length >= 6) {
+        passwordInput.classList.add("valid");
+        passwordInput.classList.remove("invalid");
+        passwordFeedback.textContent = "✅";
+        return true;
+      } else {
+        passwordInput.classList.add("invalid");
+        passwordInput.classList.remove("valid");
+        passwordFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    // Step 1: Input events
+    nameInput.addEventListener("input", validateName);
+    emailInput.addEventListener("input", validateEmail);
+    passwordInput.addEventListener("input", validatePassword);
+
+    // Step 3: Prevent invalid submit
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const isNameValid = validateName();
+      const isEmailValid = validateEmail();
+      const isPasswordValid = validatePassword();
+
+      if (isNameValid && isEmailValid && isPasswordValid) {
+        alert("🎉 Signup successful! Welcome to Tony’s Café ☕");
+        form.reset();
+        document.querySelectorAll(".feedback").forEach(f => f.textContent = "");
+        document.querySelectorAll("input").forEach(i =>
+          i.classList.remove("valid", "invalid")
+        );
+      } else {
+        alert("❌ Please fix the errors before submitting.");
+      }
+    });
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tony’s Café Signup ☕</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3efe8;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #6f4e37;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    input.valid {
+      border-color: green;
+    }
+
+    input.invalid {
+      border-color: red;
+    }
+
+    .feedback {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #6f4e37;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #5a3f2c;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>☕ Tony’s Café Signup</h2>
+
+    <form id="signupForm">
+      <div class="form-group">
+        <input type="text" id="name" placeholder="Name" />
+        <span class="feedback" id="nameFeedback"></span>
+      </div>
+
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Email" />
+        <span class="feedback" id="emailFeedback"></span>
+      </div>
+
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Password" />
+        <span class="feedback" id="passwordFeedback"></span>
+      </div>
+
+      <button type="submit">Join Rewards</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("signupForm");
+
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    const nameFeedback = document.getElementById("nameFeedback");
+    const emailFeedback = document.getElementById("emailFeedback");
+    const passwordFeedback = document.getElementById("passwordFeedback");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function validateName() {
+      if (nameInput.value.trim().length >= 3) {
+        nameInput.classList.add("valid");
+        nameInput.classList.remove("invalid");
+        nameFeedback.textContent = "✅";
+        return true;
+      } else {
+        nameInput.classList.add("invalid");
+        nameInput.classList.remove("valid");
+        nameFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    function validateEmail() {
+      if (emailRegex.test(emailInput.value.trim())) {
+        emailInput.classList.add("valid");
+        emailInput.classList.remove("invalid");
+        emailFeedback.textContent = "✅";
+        return true;
+      } else {
+        emailInput.classList.add("invalid");
+        emailInput.classList.remove("valid");
+        emailFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    function validatePassword() {
+      if (passwordInput.value.length >= 6) {
+        passwordInput.classList.add("valid");
+        passwordInput.classList.remove("invalid");
+        passwordFeedback.textContent = "✅";
+        return true;
+      } else {
+        passwordInput.classList.add("invalid");
+        passwordInput.classList.remove("valid");
+        passwordFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    // Step 1: Input events
+    nameInput.addEventListener("input", validateName);
+    emailInput.addEventListener("input", validateEmail);
+    passwordInput.addEventListener("input", validatePassword);
+
+    // Step 3: Prevent invalid submit
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const isNameValid = validateName();
+      const isEmailValid = validateEmail();
+      const isPasswordValid = validatePassword();
+
+      if (isNameValid && isEmailValid && isPasswordValid) {
+        alert("🎉 Signup successful! Welcome to Tony’s Café ☕");
+        form.reset();
+        document.querySelectorAll(".feedback").forEach(f => f.textContent = "");
+        document.querySelectorAll("input").forEach(i =>
+          i.classList.remove("valid", "invalid")
+        );
+      } else {
+        alert("❌ Please fix the errors before submitting.");
+      }
+    });
+  </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tony’s Café Signup ☕</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f3efe8;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #6f4e37;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    input.valid {
+      border-color: green;
+    }
+
+    input.invalid {
+      border-color: red;
+    }
+
+    .feedback {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #6f4e37;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #5a3f2c;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>☕ Tony’s Café Signup</h2>
+
+    <form id="signupForm">
+      <div class="form-group">
+        <input type="text" id="name" placeholder="Name" />
+        <span class="feedback" id="nameFeedback"></span>
+      </div>
+
+      <div class="form-group">
+        <input type="email" id="email" placeholder="Email" />
+        <span class="feedback" id="emailFeedback"></span>
+      </div>
+
+      <div class="form-group">
+        <input type="password" id="password" placeholder="Password" />
+        <span class="feedback" id="passwordFeedback"></span>
+      </div>
+
+      <button type="submit">Join Rewards</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("signupForm");
+
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    const nameFeedback = document.getElementById("nameFeedback");
+    const emailFeedback = document.getElementById("emailFeedback");
+    const passwordFeedback = document.getElementById("passwordFeedback");
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function validateName() {
+      if (nameInput.value.trim().length >= 3) {
+        nameInput.classList.add("valid");
+        nameInput.classList.remove("invalid");
+        nameFeedback.textContent = "✅";
+        return true;
+      } else {
+        nameInput.classList.add("invalid");
+        nameInput.classList.remove("valid");
+        nameFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    function validateEmail() {
+      if (emailRegex.test(emailInput.value.trim())) {
+        emailInput.classList.add("valid");
+        emailInput.classList.remove("invalid");
+        emailFeedback.textContent = "✅";
+        return true;
+      } else {
+        emailInput.classList.add("invalid");
+        emailInput.classList.remove("valid");
+        emailFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    function validatePassword() {
+      if (passwordInput.value.length >= 6) {
+        passwordInput.classList.add("valid");
+        passwordInput.classList.remove("invalid");
+        passwordFeedback.textContent = "✅";
+        return true;
+      } else {
+        passwordInput.classList.add("invalid");
+        passwordInput.classList.remove("valid");
+        passwordFeedback.textContent = "❌";
+        return false;
+      }
+    }
+
+    // Step 1: Input events
+    nameInput.addEventListener("input", validateName);
+    emailInput.addEventListener("input", validateEmail);
+    passwordInput.addEventListener("input", validatePassword);
+
+    // Step 3: Prevent invalid submit
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const isNameValid = validateName();
+      const isEmailValid = validateEmail();
+      const isPasswordValid = validatePassword();
+
+      if (isNameValid && isEmailValid && isPasswordValid) {
+        alert("🎉 Signup successful! Welcome to Tony’s Café ☕");
+        form.reset();
+        document.querySelectorAll(".feedback").forEach(f => f.textContent = "");
+        document.querySelectorAll("input").forEach(i =>
+          i.classList.remove("valid", "invalid")
+        );
+      } else {
+        alert("❌ Please fix the errors before submitting.");
+      }
+    });
+  </script>
+</body>
+</html>
