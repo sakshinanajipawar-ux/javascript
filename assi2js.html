@@ -1,95 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Café Color Palette Picker</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DOM Performance Comparison</title>
 
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      text-align: center;
-      background-color: #f5f5f5;
-      transition: background-color 0.3s ease;
-      padding-top: 60px;
-    }
+<style>
+  body {
+    font-family: "Courier New", monospace;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
 
-    h1 {
-      color: #333;
-      margin-bottom: 20px;
-    }
+  h1 {
+    color: #ffcc70;
+    margin-bottom: 15px;
+  }
 
-    .palette {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 25px;
-    }
+  button {
+    background: #ffcc70;
+    color: #222;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 6px;
+  }
 
-    button {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 0 5px rgba(0,0,0,0.2);
-      transition: transform 0.2s;
-    }
+  #results {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ffcc70;
+    border-radius: 8px;
+    color: #ffcc70;
+    min-height: 80px;
+  }
 
-    button:hover {
-      transform: scale(1.1);
-    }
+  #cardContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 25px;
+  }
 
-    #colorText {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-    }
-  </style>
+  .card {
+    background: #222;
+    border: 1px solid #ffcc70;
+    border-radius: 8px;
+    padding: 10px;
+    color: #ffcc70;
+  }
+</style>
 </head>
+
 <body>
 
-  <h1>☕ Café Theme Color Picker</h1>
+<h1>⚡ DOM Method Speed Test</h1>
+<p>Generate 100 cards using different DOM techniques</p>
 
-  <div class="palette">
-    <button data-color="#ff6b6b" style="background-color:#ff6b6b"></button>
-    <button data-color="#1dd3b0" style="background-color:#1dd3b0"></button>
-    <button data-color="#4dabf7" style="background-color:#4dabf7"></button>
-    <button data-color="#feca57" style="background-color:#feca57"></button>
+<button id="htmlBtn">innerHTML</button>
+<button id="createBtn">createElement</button>
+<button id="adjacentBtn">insertAdjacentHTML</button>
+<button id="fragmentBtn">Fragment + Template</button>
+
+<div id="results">Performance results will appear here.</div>
+<div id="cardContainer"></div>
+
+<!-- Template for Task 4 -->
+<template id="cardTemplate">
+  <div class="card">
+    <h3>Product</h3>
+    <p>Price: ₹100</p>
   </div>
+</template>
 
-  <p id="colorText">Click a color to change the theme</p>
+<script>
+  const container = document.getElementById("cardContainer");
+  const results = document.getElementById("results");
+  const template = document.getElementById("cardTemplate");
 
-  <script>
-    // Task 1: Select elements
-    const buttons = document.querySelectorAll('.palette button');
-    const colorText = document.querySelector('#colorText');
-    const palette = document.querySelector('.palette');
+  const CARD_COUNT = 100;
 
-    // Task 2 & 3: Button click functionality
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        const selectedColor = button.getAttribute('data-color');
+  function clearContainer() {
+    container.innerHTML = "";
+  }
 
-        document.body.style.backgroundColor = selectedColor;
-        colorText.innerHTML =
-          `Selected Color: <span style="color:${selectedColor}">${selectedColor}</span>`;
-      });
-    });
+  function showResult(method, time) {
+    results.innerHTML = `
+      <strong>${method}</strong><br>
+      Rendered ${CARD_COUNT} cards in <strong>${time.toFixed(2)} ms</strong>
+    `;
+  }
 
-    // Bonus: Create a new color button
-    const newButton = document.createElement('button');
-    newButton.style.backgroundColor = '#9b5de5';
-    newButton.setAttribute('data-color', '#9b5de5');
+  // =============================
+  // Method 1 – innerHTML
+  // =============================
+  document.getElementById("htmlBtn").addEventListener("click", () => {
+    clearContainer();
+    let html = "";
 
-    newButton.addEventListener('click', () => {
-      document.body.style.backgroundColor = '#9b5de5';
-      colorText.innerHTML =
-        `Selected Color: <span style="color:#9b5de5">#9b5de5</span>`;
-    });
+    const start = performance.now();
+    console.time("innerHTML");
 
-    palette.appendChild(newButton);
-  </script>
+    for (let i = 1; i <= CARD_COUNT; i++) {
+      html += `<div class="card">
+        <h3>Product #${i}</h3>
+        <p>Price: ₹${i * 10}</p>
+      </div>`;
+    }
+
+    container.innerHTML = html;
+
+    console.timeEnd("innerHTML");
+    const end = performance.now();
+    showResult("innerHTML", end - start);
+  });
+
+  // =============================
+  // Method 2 – createElement
+  // =============================
+  document.getElementById("createBtn").addEventListener("click", () => {
+    clearContainer();
+
+    const start = performance.now();
+    console.time("createElement");
+
+    for (let i = 1; i <= CARD_COUNT; i++) {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const h3 = document.createElement("h3");
+      h3.textContent = `Product #${i}`;
+
+      const p = document.createElement("p");
+      p.textContent = `Price: ₹${i * 10}`;
+
+      card.appendChild(h3);
+      card.appendChild(p);
+      container.appendChild(card);
+    }
+
+    console.timeEnd("createElement");
+    const end = performance.now();
+    showResult("createElement", end - start);
+  });
+
+  // =============================
+  // Method 3 – insertAdjacentHTML
+  // =============================
+  document.getElementById("adjacentBtn").addEventListener("click", () => {
+    clearContainer();
+
+    const start = performance.now();
+    console.time("insertAdjacentHTML");
+
+    for (let i = 1; i <= CARD_COUNT; i++) {
+      container.insertAdjacentHTML(
+        "beforeend",
+        `<div class="card">
+          <h3>Product #${i}</h3>
+          <p>Price: ₹${i * 10}</p>
+        </div>`
+      );
+    }
+
+    console.timeEnd("insertAdjacentHTML");
+    const end = performance.now();
+    showResult("insertAdjacentHTML", end - start);
+  });
+
+  // =============================
+  // Method 4 – DocumentFragment + Template
+  // =============================
+  document.getElementById("fragmentBtn").addEventListener("click", () => {
+    clearContainer();
+
+    const fragment = document.createDocumentFragment();
+    const start = performance.now();
+    console.time("DocumentFragment");
+
+    for (let i = 1; i <= CARD_COUNT; i++) {
+      const clone = template.content.cloneNode(true);
+      clone.querySelector("h3").textContent = `Product #${i}`;
+      clone.querySelector("p").textContent = `Price: ₹${i * 10}`;
+      fragment.appendChild(clone);
+    }
+
+    container.appendChild(fragment);
+
+    console.timeEnd("DocumentFragment");
+    const end = performance.now();
+    showResult("DocumentFragment + template", end - start);
+  });
+</script>
 
 </body>
 </html>
