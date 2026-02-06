@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Element Finder Tool</title>
+
+<style>
+  body {
+    font-family: "Courier New", monospace;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    color: #ffcc70;
+    margin-bottom: 10px;
+  }
+
+  input {
+    padding: 10px;
+    width: 60%;
+    font-size: 16px;
+    border: 2px solid #ffcc70;
+    border-radius: 5px;
+    background: #222;
+    color: #fff;
+  }
+
+  button {
+    padding: 10px 15px;
+    background: #ffcc70;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+
+  #info {
+    margin-top: 20px;
+    color: #ffcc70;
+  }
+
+  .container {
+    margin-top: 30px;
+  }
+
+  .card {
+    padding: 15px;
+    margin: 10px;
+    border: 1px solid #888;
+  }
+
+  .special {
+    background: rgba(255, 204, 112, 0.15);
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🔍 Element Finder Tool</h1>
+<p>Type a CSS selector to highlight matching elements</p>
+
+<input type="text" id="selectorInput" placeholder="e.g. .card, #header, p">
+<button id="highlightBtn">Highlight</button>
+
+<div id="info"></div>
+
+<!-- Sample elements -->
+<div class="container">
+  <div class="card special">
+    <p>Latte</p>
+    <img src="#" alt="Latte">
+  </div>
+  <div class="card">
+    <p>Espresso</p>
+    <img src="#" alt="Espresso">
+  </div>
+</div>
+
+<script>
+  // ===============================
+  // Task 1: Select key elements
+  // ===============================
+  const input = document.querySelector("#selectorInput");
+  const highlightBtn = document.querySelector("#highlightBtn");
+  const allElements = document.querySelectorAll("*");
+  const info = document.querySelector("#info");
+
+  // ===============================
+  // Highlight logic (reusable)
+  // ===============================
+  function highlightElements() {
+    allElements.forEach(el => el.style.outline = "none");
+
+    const selector = input.value.trim();
+    if (!selector) {
+      info.textContent = "";
+      return;
+    }
+
+    try {
+      const matches = document.querySelectorAll(selector);
+      matches.forEach(el => {
+        el.style.outline = "2px solid #ffcc70";
+      });
+      info.textContent = `${matches.length} element(s) matched`;
+    } catch (err) {
+      info.textContent = "❌ Invalid CSS selector";
+    }
+  }
+
+  // ===============================
+  // Task 2: Button click highlight
+  // ===============================
+  highlightBtn.addEventListener("click", highlightElements);
+
+  // ===============================
+  // Bonus: Live Finder
+  // ===============================
+  input.addEventListener("input", highlightElements);
+
+  // ===============================
+  // Task 3: closest() & matches()
+  // ===============================
+  document.body.addEventListener("click", (e) => {
+    if (e.target === input || e.target === highlightBtn) return;
+
+    const closestContainer = e.target.closest(".container");
+    const isSpecial = e.target.matches(".special");
+
+    info.innerHTML = `
+      <p>Clicked: &lt;${e.target.tagName.toLowerCase()}&gt;</p>
+      <p>Inside .container? → ${closestContainer ? "Yes" : "No"}</p>
+      <p>Matches ".special"? → ${isSpecial}</p>
+    `;
+  });
+</script>
+
+</body>
+</html>
