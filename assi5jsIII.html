@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 5 – Clone Tester Tool</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    text-align: center;
+    padding: 40px;
+  }
+
+  h1 {
+    color: #38bdf8;
+    margin-bottom: 10px;
+  }
+
+  select, button {
+    padding: 10px 14px;
+    margin: 6px;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+  }
+
+  select {
+    background: #020617;
+    color: white;
+    border: 2px solid #38bdf8;
+  }
+
+  button {
+    background: #38bdf8;
+    color: #020617;
+    cursor: pointer;
+  }
+
+  button:disabled {
+    background: #475569;
+    cursor: not-allowed;
+  }
+
+  .display {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    gap: 20px;
+  }
+
+  .card {
+    width: 45%;
+    padding: 15px;
+    border-radius: 10px;
+    background: #020617;
+    text-align: left;
+  }
+
+  .shallow {
+    border: 2px solid #ef4444;
+  }
+
+  .deep {
+    border: 2px solid #22c55e;
+  }
+
+  pre {
+    background: #020617;
+    padding: 10px;
+    border-radius: 8px;
+    color: #e5e7eb;
+    overflow-x: auto;
+  }
+
+  .legend {
+    margin-top: 15px;
+  }
+
+  .legend span {
+    margin: 0 10px;
+    font-weight: bold;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🧬 Clone Tester Tool</h1>
+<p>Test shallow vs deep copies by mutating objects in real time.</p>
+
+<select id="method">
+  <option value="spread">Spread Operator</option>
+  <option value="assign">Object.assign()</option>
+  <option value="json">JSON Clone</option>
+  <option value="structured">structuredClone()</option>
+</select>
+
+<br>
+
+<button id="cloneBtn">Clone</button>
+<button id="mutateOriginal">Mutate Original</button>
+<button id="mutateCopy" disabled>Mutate Copy</button>
+
+<div class="display">
+  <div id="originalCard" class="card">
+    <h3>Original Object</h3>
+    <pre id="originalDisplay"></pre>
+  </div>
+
+  <div id="copyCard" class="card">
+    <h3>Copied Object</h3>
+    <pre id="copyDisplay"></pre>
+  </div>
+</div>
+
+<div class="legend">
+  <span style="color:#ef4444;">🔴 Shallow Copy</span>
+  <span style="color:#22c55e;">🟢 Deep Copy</span>
+</div>
+
+<script>
+  const baseHero = {
+    name: "Iron Man",
+    suit: { color: "red", power: 90 }
+  };
+
+  let original = structuredClone(baseHero);
+  let copy = null;
+
+  const originalDisplay = document.getElementById('originalDisplay');
+  const copyDisplay = document.getElementById('copyDisplay');
+  const copyCard = document.getElementById('copyCard');
+  const mutateCopyBtn = document.getElementById('mutateCopy');
+
+  function render() {
+    originalDisplay.textContent = JSON.stringify(original, null, 2);
+    copyDisplay.textContent = JSON.stringify(copy, null, 2);
+  }
+
+  document.getElementById('cloneBtn').addEventListener('click', () => {
+    const method = document.getElementById('method').value;
+
+    if (method === 'spread') {
+      copy = { ...original };
+      copyCard.className = 'card shallow';
+    }
+
+    if (method === 'assign') {
+      copy = Object.assign({}, original);
+      copyCard.className = 'card shallow';
+    }
+
+    if (method === 'json') {
+      copy = JSON.parse(JSON.stringify(original));
+      copyCard.className = 'card deep';
+    }
+
+    if (method === 'structured') {
+      if (typeof structuredClone !== 'function') {
+        alert('structuredClone not supported in this browser');
+        return;
+      }
+      copy = structuredClone(original);
+      copyCard.className = 'card deep';
+    }
+
+    mutateCopyBtn.disabled = false;
+    render();
+  });
+
+  document.getElementById('mutateOriginal').addEventListener('click', () => {
+    original.suit.power += 10;
+    render();
+  });
+
+  document.getElementById('mutateCopy').addEventListener('click', () => {
+    if (!copy) return;
+    copy.suit.color = copy.suit.color === 'red' ? 'gold' : 'red';
+    render();
+  });
+
+  render();
+</script>
+
+</body>
+</html>
