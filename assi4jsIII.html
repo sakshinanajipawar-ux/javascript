@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 4 – Shopping Cart Calculator</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #fdfbfb, #ebedee);
+      padding: 40px;
+      color: #1e293b;
+    }
+    h1 {
+      text-align: center;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+    p {
+      text-align: center;
+      color: #475569;
+      margin-bottom: 25px;
+    }
+    .cart-container {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    th {
+      background-color: #f8fafc;
+      color: #334155;
+    }
+    button {
+      margin: 6px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+    .btn-primary { background: #2563eb; color: white; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-warning { background: #f59e0b; color: white; }
+    .btn-warning:hover { background: #d97706; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-danger:hover { background: #dc2626; }
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🛒 Shopping Cart Calculator</h1>
+  <p>Experiment with advanced array methods – reduce(), find(), some(), every(), and findIndex()!</p>
+
+  <div class="cart-container">
+    <table id="cartTable">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Price (₹)</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div style="text-align:center;">
+      <button class="btn-primary" onclick="calculateTotal()">💰 Calculate Total</button>
+      <button class="btn-warning" onclick="findProduct()">🔍 Find Product</button>
+      <button class="btn-primary" onclick="checkConditions()">✅ Check Conditions</button>
+      <button class="btn-danger" onclick="removeItem()">🗑️ Remove Item</button>
+    </div>
+  </div>
+
+  <h3>🧾 Output</h3>
+  <pre id="output">Click a button to see results here...</pre>
+
+  <script>
+    let cart = [
+      { id: 1, name: 'Phone', price: 20000, quantity: 1 },
+      { id: 2, name: 'Headphones', price: 2000, quantity: 2 },
+      { id: 3, name: 'Charger', price: 800, quantity: 3 }
+    ];
+
+    const output = document.getElementById('output');
+    const cartTableBody = document.querySelector('#cartTable tbody');
+
+    function renderCart() {
+      cartTableBody.innerHTML = '';
+
+      if (cart.length === 0) {
+        cartTableBody.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align:center; color:#64748b;">
+              🛒 Cart is empty
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      cart.forEach(item => {
+        const subtotal = item.price * item.quantity;
+        cartTableBody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.price}</td>
+            <td>${item.quantity}</td>
+            <td>₹${subtotal}</td>
+          </tr>
+        `);
+      });
+    }
+
+    function calculateTotal() {
+      const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
+      output.textContent = `🧾 Total Price: ₹${total.toLocaleString()}`;
+    }
+
+    function findProduct() {
+      const itemToFind = prompt('Enter product name to find (e.g., Phone):');
+
+      if (!itemToFind) {
+        output.textContent = '⚠️ Search cancelled.';
+        return;
+      }
+
+      const found = cart.find(
+        item => item.name.toLowerCase() === itemToFind.toLowerCase()
+      );
+
+      if (found) {
+        output.textContent = `🎯 Found Item: ${found.name} – ₹${found.price} (x${found.quantity})`;
+      } else {
+        output.textContent = '❌ Item not found!';
+      }
+    }
+
+    function checkConditions() {
+      const hasCheapItem = cart.some(item => item.price < 1000);
+      const allAffordable = cart.every(item => item.price < 25000);
+
+      output.textContent =
+        `🤑 Any cheap item? ${hasCheapItem}\n💚 All affordable? ${allAffordable}`;
+    }
+
+    function removeItem() {
+      const name = prompt('Enter product name to remove:');
+
+      if (!name) {
+        output.textContent = '⚠️ Remove cancelled.';
+        return;
+      }
+
+      const removeIndex = cart.findIndex(
+        item => item.name.toLowerCase() === name.toLowerCase()
+      );
+
+      if (removeIndex !== -1) {
+        const removed = cart.splice(removeIndex, 1);
+        output.textContent = `🗑️ Removed item: ${removed[0].name}`;
+        renderCart();
+      } else {
+        output.textContent = '❌ Item not found!';
+      }
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
