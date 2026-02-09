@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 12 – Tony’s Kanban Board</title>
+<style>
+  body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  h1 { color: #ffcc70; margin-bottom: 10px; }
+  .controls {
+    margin-bottom: 20px;
+  }
+  button, select {
+    padding: 10px 15px;
+    background: #ffcc70;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+  }
+  .board {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .column {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    width: 280px;
+    padding: 10px;
+    min-height: 300px;
+    border: 2px solid transparent;
+    transition: border 0.2s;
+  }
+  .column.drag-over {
+    border: 2px dashed #ffcc70;
+  }
+  .task {
+    background: rgba(0,0,0,0.3);
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: grab;
+    transition: transform 0.2s, background 0.3s;
+  }
+  .task:hover {
+    background: rgba(255,255,255,0.15);
+    transform: scale(1.03);
+  }
+  .user {
+    font-size: 0.9em;
+    color: #ffcc70;
+  }
+</style>
+</head>
+<body>
+
+<h1>🏗️ Tony’s Task Management System</h1>
+<p>Drag, drop, and manage tasks with persistence and user data!</p>
+
+<div class="controls">
+  <button id="addTaskBtn">+ Add Task</button>
+  <select id="userFilter">
+    <option value="all">All Users</option>
+  </select>
+</div>
+
+<div class="board">
+  <div class="column" data-status="todo">
+    <h3>📝 To Do</h3>
+    <div class="task-list"></div>
+  </div>
+  <div class="column" data-status="progress">
+    <h3>🚧 In Progress</h3>
+    <div class="task-list"></div>
+  </div>
+  <div class="column" data-status="done">
+    <h3>✅ Done</h3>
+    <div class="task-list"></div>
+  </div>
+</div>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let users = [];
+const addTaskBtn = document.getElementById("addTaskBtn");
+const userFilter = document.getElementById("userFilter");
+
+// ===============================
+// TASK 4: Fetch User Data
+// ===============================
+fetch("https://jsonplaceholder.typicode.com/users")
+  .then(res => res.json())
+  .then(data => {
+    users = data;
+    userFilter.innerHTML += data.map(u => `<option value="${u.name}">${u.name}</option>`).join("");
+    renderTasks();
+  });
+
+// ===============================
+// TASK 2: Add Task
+// ===============================
+addTaskBtn.addEventListener("click", () => {
+  const title = prompt("Enter task title:");
+  if (!title) return;
+  const user = users[Math.floor(Math.random() * users.length)]?.name || "Unknown";
+  const newTask = { id: Date.now(), title, status: "todo", user };
+  tasks.push(newTask);
+  saveTasks();
+  renderTasks();
+});
+
+// ===============================
+// Render Tasks
+// ===============================
+function renderTasks() {
+  document.querySelectorAll(".task-list").forEach(list => list.innerHTML = "");
+  const filterUser = userFilter.value;
+  tasks
+    .filter(t => filterUser === "all" || t.user === filterUser)
+    .forEach(task => {
+      const taskEl = document.createElement("div");
+      taskEl.className = "task";
+      taskEl.draggable = true;
+      taskEl.id = task.id;
+      taskEl.innerHTML = `<strong>${task.title}</strong><div class="user">@${task.user}</div>`;
+      document.querySelector(`[data-status="${task.status}"] .task-list`).appendChild(taskEl);
+      addDragEvents(taskEl);
+    });
+}
+
+// ===============================
+// TASK 3: Drag & Drop
+// ===============================
+function addDragEvents(taskEl) {
+  taskEl.addEventListener("dragstart", e => {
+    e.dataTransfer.setData("id", taskEl.id);
+  });
+}
+
+document.querySelectorAll(".column").forEach(col => {
+  col.addEventListener("dragover", e => {
+    e.preventDefault();
+    col.classList.add("drag-over");
+  });
+  col.addEventListener("dragleave", () => col.classList.remove("drag-over"));
+  col.addEventListener("drop", e => {
+    e.preventDefault();
+    col.classList.remove("drag-over");
+    const id = e.dataTransfer.getData("id");
+    const task = tasks.find(t => t.id == id);
+    task.status = col.dataset.status;
+    saveTasks();
+    renderTasks();
+  });
+});
+
+// ===============================
+// Persist to localStorage
+// ===============================
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// ===============================
+// TASK 5: User Filtering
+// ===============================
+userFilter.addEventListener("change", renderTasks);
+
+renderTasks();
+</script>
+
+</body>
+</html>
