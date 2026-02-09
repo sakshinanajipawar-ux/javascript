@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Animal Kingdom Inheritance Visualizer</title>
+
+<style>
+  body {
+    font-family: "Courier New", monospace;
+    background: linear-gradient(135deg, #1f4037, #99f2c8);
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    color: #ffeb99;
+  }
+
+  select, button {
+    padding: 10px;
+    margin: 6px;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+  }
+
+  select {
+    background: #222;
+    color: #fff;
+    border: 2px solid #ffeb99;
+  }
+
+  button {
+    background: #ffeb99;
+    color: #222;
+    cursor: pointer;
+  }
+
+  .chain {
+    max-width: 800px;
+    margin: 20px auto;
+    text-align: left;
+  }
+
+  .node {
+    background: #111;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-left: 5px solid #ffeb99;
+    border-radius: 6px;
+  }
+
+  .active {
+    border-left-color: #00ffcc;
+  }
+
+  .title {
+    color: #ffeb99;
+    font-weight: bold;
+  }
+
+  .meta {
+    color: #00ffcc;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🐾 Animal Kingdom Inheritance Visualizer</h1>
+<p>Compare constructor, class, and prototype-based inheritance.</p>
+
+<select id="mode">
+  <option value="constructor">Constructor Functions</option>
+  <option value="class">Class Syntax</option>
+  <option value="prototype">Object.create()</option>
+</select>
+
+<button id="inspect">Inspect speak()</button>
+
+<div id="output" class="chain"></div>
+
+<script>
+// ===============================
+// TASK 1: Constructor Functions
+// ===============================
+function AnimalCF(name) {
+  this.name = name;
+}
+AnimalCF.prototype.speak = function() {
+  return this.name + " makes a sound.";
+};
+
+function MammalCF(name) {
+  AnimalCF.call(this, name);
+}
+MammalCF.prototype = Object.create(AnimalCF.prototype);
+MammalCF.prototype.constructor = MammalCF;
+
+function DogCF(name) {
+  MammalCF.call(this, name);
+}
+DogCF.prototype = Object.create(MammalCF.prototype);
+DogCF.prototype.constructor = DogCF;
+DogCF.prototype.speak = function() {
+  return this.name + " barks!";
+};
+
+// ===============================
+// TASK 2: Class-Based Version
+// ===============================
+class AnimalC {
+  constructor(name) {
+    this.name = name;
+  }
+  speak() {
+    return this.name + " makes a sound.";
+  }
+}
+
+class MammalC extends AnimalC {}
+class DogC extends MammalC {
+  speak() {
+    return this.name + " barks!";
+  }
+}
+
+// ===============================
+// BONUS: Object.create() Version
+// ===============================
+const AnimalO = {
+  speak() {
+    return this.name + " makes a sound.";
+  }
+};
+
+const MammalO = Object.create(AnimalO);
+
+function createDogO(name) {
+  const dog = Object.create(MammalO);
+  dog.name = name;
+  dog.speak = function() {
+    return this.name + " barks!";
+  };
+  return dog;
+}
+
+// ===============================
+// Visualization Logic
+// ===============================
+const output = document.getElementById("output");
+
+function getChain(obj) {
+  const chain = [];
+  let current = obj;
+  while (current !== null) {
+    chain.push(current);
+    current = Object.getPrototypeOf(current);
+  }
+  return chain;
+}
+
+function renderChain(obj, methodName) {
+  output.innerHTML = "";
+  const chain = getChain(obj);
+
+  chain.forEach((level, index) => {
+    const definesMethod =
+      level && Object.prototype.hasOwnProperty.call(level, methodName);
+
+    const node = document.createElement("div");
+    node.className = "node" + (definesMethod ? " active" : "");
+
+    let name;
+    if (level === null) {
+      name = "null";
+    } else if (level.constructor?.name) {
+      name = level.constructor.name;
+    } else {
+      name = "Object.create() object";
+    }
+
+    node.innerHTML = `
+      <div class="title">[Level ${index}] ${name}</div>
+      <div class="meta">
+        Own "${methodName}"? → ${definesMethod}<br>
+        Keys: ${level ? Object.keys(level).join(", ") || "none" : "n/a"}
+      </div>
+    `;
+
+    output.appendChild(node);
+  });
+}
+
+// ===============================
+// UI Control
+// ===============================
+document.getElementById("inspect").addEventListener("click", () => {
+  const mode = document.getElementById("mode").value;
+  let dog;
+
+  if (mode === "constructor") {
+    dog = new DogCF("Buddy");
+  } else if (mode === "class") {
+    dog = new DogC("Buddy");
+  } else {
+    dog = createDogO("Buddy");
+  }
+
+  renderChain(dog, "speak");
+});
+</script>
+
+</body>
+</html>
