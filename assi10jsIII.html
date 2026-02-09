@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Function Toolkit Playground</title>
+
+<style>
+  body {
+    font-family: "Fira Code", monospace;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  h1 { color: #ffdb70; }
+
+  input, button {
+    margin: 6px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: none;
+    font-weight: bold;
+  }
+
+  input {
+    width: 180px;
+    background: #111;
+    color: #fff;
+    border: 2px solid #ffdb70;
+    text-align: center;
+  }
+
+  button {
+    background: #ffdb70;
+    color: #222;
+    cursor: pointer;
+  }
+
+  pre {
+    background: #000;
+    color: #0f0;
+    padding: 15px;
+    border-radius: 8px;
+    width: 85%;
+    margin: 20px auto;
+    text-align: left;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>⚙️ Function Toolkit Playground</h1>
+<p>Explore <b>compose</b>, <b>pipe</b>, and <b>partial</b> with live data flow.</p>
+
+<input id="inputValue" type="number" placeholder="Enter a number" />
+<br>
+
+<button id="btnCompose">🚀 Compose</button>
+<button id="btnPipe">🔄 Pipe</button>
+<button id="btnPartial">🧩 Partial</button>
+
+<pre id="output"></pre>
+
+<script>
+// ===============================
+// Sample Functions
+// ===============================
+const increment = x => x + 1;
+const double = x => x * 2;
+const square = x => x * x;
+const greet = (greeting, name) => `${greeting}, ${name}!`;
+
+// ===============================
+// Higher-Order Utilities
+// ===============================
+const compose = (...fns) => x =>
+  fns.reduceRight((v, fn) => fn(v), x);
+
+const pipe = (...fns) => x =>
+  fns.reduce((v, fn) => fn(v), x);
+
+const partial = (fn, ...fixedArgs) =>
+  (...restArgs) => fn(...fixedArgs, ...restArgs);
+
+// ===============================
+// Visualization Helper
+// ===============================
+function visualizeFlow(startValue, fns) {
+  let value = startValue;
+  let steps = [`${value}`];
+
+  fns.forEach(fn => {
+    value = fn(value);
+    steps.push(`→ ${fn.name} → ${value}`);
+  });
+
+  return steps.join(" ");
+}
+
+// ===============================
+// DOM Elements
+// ===============================
+const input = document.getElementById("inputValue");
+const output = document.getElementById("output");
+
+// ===============================
+// Event Handlers
+// ===============================
+document.getElementById("btnCompose").addEventListener("click", () => {
+  if (input.value === "") {
+    output.textContent = "⚠️ Please enter a number first.";
+    return;
+  }
+
+  const val = Number(input.value);
+  const result = compose(square, double, increment)(val);
+
+  output.textContent =
+`COMPOSE (right → left)
+
+Flow:
+${visualizeFlow(val, [increment, double, square])}
+
+Final Result: ${result}
+`;
+});
+
+document.getElementById("btnPipe").addEventListener("click", () => {
+  if (input.value === "") {
+    output.textContent = "⚠️ Please enter a number first.";
+    return;
+  }
+
+  const val = Number(input.value);
+  const result = pipe(increment, double, square)(val);
+
+  output.textContent =
+`PIPE (left → right)
+
+Flow:
+${visualizeFlow(val, [increment, double, square])}
+
+Final Result: ${result}
+`;
+});
+
+document.getElementById("btnPartial").addEventListener("click", () => {
+  const sayHello = partial(greet, "Hello");
+  output.textContent =
+`PARTIAL APPLICATION
+
+Original function:
+greet(greeting, name)
+
+After partial:
+const sayHello = partial(greet, "Hello")
+
+Usage:
+sayHello("Tony") → ${sayHello("Tony")}
+`;
+});
+</script>
+
+</body>
+</html>
