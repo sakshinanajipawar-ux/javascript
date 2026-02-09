@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 11 – Multi-API Dashboard</title>
+<style>
+  body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  h1 { color: #fdbb2d; margin-bottom: 15px; }
+  .dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+  .card {
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 10px;
+    width: 220px;
+    transition: 0.3s;
+    border: 2px solid transparent;
+  }
+  button {
+    padding: 10px 20px;
+    background: #fdbb2d;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .status { margin-top: 15px; font-weight: bold; }
+  #raceResult, #firstSuccess {
+    margin-top: 25px;
+    color: #fdbb2d;
+    font-size: 1.1em;
+  }
+</style>
+</head>
+<body>
+
+<h1>🚀 Tony’s Multi-API Dashboard</h1>
+<p>Fetching from multiple APIs in parallel – see who wins the race!</p>
+
+<button id="reloadBtn">Reload Data</button>
+
+<div class="dashboard">
+  <div class="card" id="api0"><h3>API 1</h3><div class="status">Waiting...</div></div>
+  <div class="card" id="api1"><h3>API 2</h3><div class="status">Waiting...</div></div>
+  <div class="card" id="api2"><h3>API 3</h3><div class="status">Waiting...</div></div>
+</div>
+
+<div id="raceResult"></div>
+<div id="firstSuccess"></div>
+
+<script>
+// ===============================
+// TASK 1: Define API URLs
+// ===============================
+const apis = [
+  "https://api.github.com/users/octocat",
+  "https://api.spacexdata.com/v5/launches/latest",
+  "https://invalid-api-url-12345.com"
+];
+
+const cards = document.querySelectorAll(".card");
+const raceResult = document.getElementById("raceResult");
+const firstSuccess = document.getElementById("firstSuccess");
+const reloadBtn = document.getElementById("reloadBtn");
+
+// ===============================
+// Helper: Update card
+// ===============================
+function updateCard(index, msg, color) {
+  const card = cards[index];
+  card.querySelector(".status").textContent = msg;
+  card.style.borderColor = color;
+}
+
+// ===============================
+// TASK 2, 3, 4: Fetch & Display
+// ===============================
+function fetchAllAPIs() {
+  // Reset
+  cards.forEach((c,i) => updateCard(i,"⏳ Loading...","#ccc"));
+  raceResult.textContent = "";
+  firstSuccess.textContent = "";
+
+  // Create fetch promises with individual error handling
+  const fetches = apis.map(url => fetch(url).catch(err => err));
+
+  // ---- Promise.allSettled() ----
+  Promise.allSettled(fetches).then(results => {
+    results.forEach((res,i) => {
+      if(res.status === "fulfilled" && !(res.value instanceof Error)){
+        updateCard(i,"✅ Success","#2ecc71");
+      } else {
+        updateCard(i,"❌ Failed","#e74c3c");
+      }
+    });
+  });
+
+  // ---- Promise.any() ----
+  Promise.any(fetches)
+    .then(res => {
+      if(res instanceof Error) throw res;
+      return res.json();
+    })
+    .then(data => {
+      firstSuccess.textContent = `🎉 First successful response: ${data.name || data.flight_number || "Unknown API"}`;
+    })
+    .catch(() => {
+      firstSuccess.textContent = "😢 No API succeeded";
+    });
+
+  // ---- Promise.race() ----
+  Promise.race(fetches)
+    .then(res => {
+      raceResult.textContent = res instanceof Error
+        ? "⚡ Fastest response was a failure!"
+        : "🏁 Fastest response received!";
+    })
+    .catch(() => raceResult.textContent = "⚡ Fastest response failed!");
+}
+
+// ===============================
+// TASK 5: Reload button
+// ===============================
+reloadBtn.addEventListener("click", fetchAllAPIs);
+
+// Initial load
+fetchAllAPIs();
+</script>
+
+</body>
+</html>
