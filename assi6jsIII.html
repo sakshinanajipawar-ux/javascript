@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Config Manager Tool</title>
+
+<style>
+  body {
+    font-family: "Courier New", monospace;
+    background: linear-gradient(135deg, #232526, #414345);
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    color: #ffcc70;
+    margin-bottom: 10px;
+  }
+
+  button {
+    padding: 10px 16px;
+    background: #ffcc70;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    margin: 6px;
+    cursor: pointer;
+  }
+
+  pre {
+    background: #111;
+    color: #00ffcc;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: left;
+    max-width: 800px;
+    margin: 20px auto;
+    overflow-x: auto;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>⚙️ Config Manager Tool</h1>
+<p>Merge configs dynamically and safely destructure values.</p>
+
+<button id="mergeBtn">🔄 Merge Config</button>
+<button id="partialBtn">🧩 Use Partial Config</button>
+
+<pre id="output"></pre>
+
+<script>
+// ===============================
+// TASK 1: Base & User Configs
+// ===============================
+const defaultConfig = {
+  theme: "dark",
+  version: "1.0.0",
+  aiName: "Jarvis"
+};
+
+let userConfig = {
+  theme: "light",
+  aiName: "Friday"
+};
+
+let finalConfig = {};
+
+const output = document.getElementById("output");
+
+// ===============================
+// Helper: Render UI
+// ===============================
+function render(extra = "") {
+  output.textContent =
+`${extra}
+🧱 Default Config:
+${JSON.stringify(defaultConfig, null, 2)}
+
+👤 User Config:
+${JSON.stringify(userConfig, null, 2)}
+
+⚙️ Final Config:
+${JSON.stringify(finalConfig, null, 2)}
+`;
+}
+
+// ===============================
+// TASK 2 + 3: Merge & Destructure
+// ===============================
+document.getElementById("mergeBtn").addEventListener("click", () => {
+  // Merge using spread
+  finalConfig = { ...defaultConfig, ...userConfig };
+
+  // Destructure with fallbacks
+  const {
+    theme = "dark",
+    aiName = "AI",
+    version = "1.0",
+    ...rest
+  } = finalConfig;
+
+  console.clear();
+  console.log("Destructured Values:");
+  console.log({ theme, aiName, version, rest });
+
+  render("✅ Configs merged successfully!\n");
+});
+
+// ===============================
+// BONUS: Partial Config Simulation
+// ===============================
+document.getElementById("partialBtn").addEventListener("click", () => {
+  userConfig = {
+    theme: "stealth"
+    // aiName and version missing on purpose
+  };
+  finalConfig = {};
+  render("🧩 Partial user config loaded.\n");
+});
+
+// Initial render
+render("🚀 Ready to merge configs!\n");
+</script>
+
+</body>
+</html>
