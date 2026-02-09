@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Prototype Chain Visualizer</title>
+
+<style>
+  body {
+    font-family: "Courier New", monospace;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    color: #ffcc70;
+    margin-bottom: 10px;
+  }
+
+  button, select {
+    padding: 10px 14px;
+    background: #ffcc70;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    margin: 6px;
+    cursor: pointer;
+  }
+
+  .chain {
+    max-width: 900px;
+    margin: 20px auto;
+    text-align: left;
+  }
+
+  .node {
+    background: #111;
+    border-left: 4px solid #ffcc70;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .level {
+    color: #ffcc70;
+    font-weight: bold;
+  }
+
+  .meta {
+    color: #00ffcc;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+
+<body>
+
+<h1>🧬 Prototype Chain Visualizer</h1>
+<p>Select an object to inspect how JavaScript walks its prototype chain.</p>
+
+<select id="objectSelect">
+  <option value="">-- Choose object --</option>
+  <option value="baseArmor">baseArmor</option>
+  <option value="nano">nano</option>
+  <option value="suit">suit</option>
+</select>
+
+<button id="inspectBtn">🔍 Inspect</button>
+
+<div id="output" class="chain"></div>
+
+<script>
+// ===============================
+// TASK 1: Constructors & Objects
+// ===============================
+function Armor(type) {
+  this.type = type;
+}
+Armor.prototype.getType = function() {
+  return this.type;
+};
+
+function NanoArmor(type, enhancement) {
+  Armor.call(this, type);
+  this.enhancement = enhancement;
+}
+NanoArmor.prototype = Object.create(Armor.prototype);
+NanoArmor.prototype.constructor = NanoArmor;
+NanoArmor.prototype.getEnhancement = function() {
+  return this.enhancement;
+};
+
+function PoweredSuit(name) {
+  this.name = name;
+}
+PoweredSuit.prototype.activate = function() {
+  return this.name + " activated";
+};
+
+// Instances
+const baseArmor = new Armor("Standard");
+const nano = new NanoArmor("Nano-X", "stealth");
+const suit = Object.create(nano);
+suit.name = "Mark-9";
+
+// Safe registry (no eval)
+const registry = { baseArmor, nano, suit };
+
+// ===============================
+// TASK 2: Prototype Traversal
+// ===============================
+function getPrototypeChain(obj) {
+  const chain = [];
+  let current = obj;
+
+  while (current !== null) {
+    chain.push(current);
+    current = Object.getPrototypeOf(current);
+  }
+
+  chain.push(null);
+  return chain;
+}
+
+// ===============================
+// TASK 3: Render Chain Info
+// ===============================
+const output = document.getElementById("output");
+
+function renderChain(objName, obj) {
+  output.innerHTML = "";
+
+  const chain = getPrototypeChain(obj);
+
+  chain.forEach((levelObj, index) => {
+    const node = document.createElement("div");
+    node.className = "node";
+
+    if (levelObj === null) {
+      node.innerHTML = `
+        <div class="level">[Level ${index}] null</div>
+        <div class="meta">End of prototype chain</div>
+      `;
+    } else {
+      const ctor =
+        levelObj.constructor?.name || "Anonymous / Plain Object";
+      const isObjectProto =
+        levelObj === Object.prototype;
+
+      const keys = Object.keys(levelObj);
+      const methods = Object.getOwnPropertyNames(levelObj)
+        .filter(
+          k => typeof levelObj[k] === "function"
+        );
+
+      node.innerHTML = `
+        <div class="level">[Level ${index}] ${ctor}</div>
+        <div class="meta">
+          ${isObjectProto ? "⚠️ Object.prototype<br>" : ""}
+          Own keys: ${keys.length ? keys.join(", ") : "none"}<br>
+          Methods: ${methods.length ? methods.join(", ") : "none"}
+        </div>
+      `;
+    }
+
+    output.appendChild(node);
+  });
+}
+
+// ===============================
+// UI Control
+// ===============================
+document.getElementById("inspectBtn").addEventListener("click", () => {
+  const name = document.getElementById("objectSelect").value;
+  if (!name || !registry[name]) {
+    output.innerHTML = "<p>❌ Please select a valid object.</p>";
+    return;
+  }
+  renderChain(name, registry[name]);
+});
+</script>
+
+</body>
+</html>
